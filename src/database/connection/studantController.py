@@ -9,7 +9,6 @@ class studantsController:
         self.__DB_NAME = "studants.db"
         self.__DB_FILE = self.__ROOT_DIR / self.__DB_NAME
         self.__makeDataBase()
-        self.__feedStudantsList()
 
     def create(self, studant: StudantModel):
         sql = "INSERT INTO studants (username, enrollment_number, password) VALUES (?, ?, ?);"
@@ -21,28 +20,10 @@ class studantsController:
             sql, (studant.username, studant.enrollment_number, studant.password)
         )
 
-        studantID = cursor.lastrowid
-
-        studant.id = studantID
-        studant.studantsList.append(studant)
-
         conn.commit()
 
         cursor.close()
         conn.close()
-
-    def __feedStudantsList(self):
-        sql = "SELECT * FROM studants;"
-
-        conn = sqlite3.connect(self.__DB_FILE)
-        cursor = conn.cursor()
-
-        cursor.execute(sql)
-
-        for studant in cursor.fetchall():
-            self.studantsList.append(
-                StudantModel(studant[1], studant[2], studant[3], studant[0])
-            )
 
     def delete(self, studant: StudantModel):
         sql = "DELETE FROM products WHERE id = ?;"
@@ -56,6 +37,21 @@ class studantsController:
 
         cursor.close()
         conn.close()
+
+    def getStudants(self):
+        sql = "SELECT * FROM studants;"
+
+        conn = sqlite3.connect(self.__DB_FILE)
+        cursor = conn.cursor()
+
+        cursor.execute(sql)
+
+        studants = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        return studants
 
     def __makeDataBase(self):
         """
