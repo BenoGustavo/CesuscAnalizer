@@ -1,6 +1,6 @@
 import sqlite3
 from pathlib import Path
-from src.database.studantModel import StudantModel
+from database.studantModel import StudantModel
 
 
 class studantsController:
@@ -12,7 +12,7 @@ class studantsController:
         self.__feedStudantsList()
 
     def create(self, studant: StudantModel):
-        sql = "INSERT INTO products (username, enrollment_number, password) VALUES (?, ?, ?);"
+        sql = "INSERT INTO studants (username, enrollment_number, password) VALUES (?, ?, ?);"
 
         conn = sqlite3.connect(self.__DB_FILE)
         cursor = conn.cursor()
@@ -22,15 +22,12 @@ class studantsController:
         )
 
         studantID = cursor.lastrowid
-        studantData = cursor.fetchone()
 
-        newStudant = StudantModel(
-            studantData[1], studantData[2], studantData[3], studantID
-        )
-
-        newStudant.addStudant(newStudant)
+        studant.id = studantID
+        studant.studantsList.append(studant)
 
         conn.commit()
+
         cursor.close()
         conn.close()
 
@@ -56,6 +53,7 @@ class studantsController:
         cursor.execute(sql, (studant.id,))
 
         conn.commit()
+
         cursor.close()
         conn.close()
 
