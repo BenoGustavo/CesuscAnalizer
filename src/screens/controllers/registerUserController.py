@@ -41,11 +41,11 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
         newStudant = StudantModel(username, enrollment_number, password)
         studantsController().create(newStudant)
 
-        self.hide()
-        from screens.controllers.selectUserController import SelectUserWindow
-
-        self.selectUserWindow = SelectUserWindow()
-        self.selectUserWindow.show()
+        self.__showErrorMessage(
+            "Usuário registrado com sucesso!",
+            QMessageBox.Icon.Information,
+            "Usuário registrado",
+        )
 
     def returnButtonClicked(self):
         self.hide()
