@@ -1,5 +1,9 @@
 from dataclasses import dataclass
 
+"""Just an class that creates a instance of studant with the given parameters
+
+It's mostly used to create a new studant in the database"""
+
 
 @dataclass
 class StudantModel:
