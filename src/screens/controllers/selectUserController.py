@@ -29,10 +29,24 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
             studantCheckBox.setObjectName(studant[1] + "CheckBox")
             studantCheckBox.setStyleSheet("color:black;font-size:24px;")
 
+            # Use a lambda function to pass the student id when the checkbox is clicked
+            studantCheckBox.clicked.connect(
+                self.createCheckboxClickedLambda(studant, studantCheckBox)
+            )
+
             button_group.addButton(studantCheckBox)
 
             self.usersFrame.setLayout(QVBoxLayout())
             self.usersFrame.layout().addWidget(studantCheckBox)
+
+    def createCheckboxClickedLambda(self, studant, studantCheckBox):
+        return lambda: self.checkboxClicked(studantCheckBox.isChecked(), studant[0])
+
+    def checkboxClicked(self, checked, studant_id):
+        if checked:
+            print(f"Checkbox for student {studant_id} is checked")
+        else:
+            print(f"Checkbox for student {studant_id} is unchecked")
 
     def registerButtonClicked(self):
         self.hide()
