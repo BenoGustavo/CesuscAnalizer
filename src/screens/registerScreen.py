@@ -80,6 +80,7 @@ class Ui_RegisterUserWindow(object):
         self.returnButton.setObjectName("returnButton")
         self.returnButton.setMinimumSize(QSize(60, 60))
         self.returnButton.setIcon(QIcon("assets/images/returnArrow.png"))
+        self.returnButton.setIconSize(QSize(25, 25))  # set the size of the icon
         self.returnButton.setStyleSheet(
             "QPushButton{\n"
             "	border-radius:30px;\n"

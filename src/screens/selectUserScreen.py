@@ -101,7 +101,7 @@ class Ui_SelectUserWindow(object):
         self.subTittleLabel.setStyleSheet("color:black;")
         self.continueButton = QPushButton(self.frame)
         self.continueButton.setObjectName("continueButton")
-        self.continueButton.setGeometry(QRect(50, 520, 258, 56))
+        self.continueButton.setGeometry(QRect(60, 520, 201, 56))
         self.continueButton.setStyleSheet(
             "QPushButton{\n"
             "	color:black;\n"
@@ -119,12 +119,36 @@ class Ui_SelectUserWindow(object):
         )
         self.registerButton = QPushButton(self.frame)
         self.registerButton.setObjectName("registerButton")
-        self.registerButton.setGeometry(QRect(350, 520, 258, 56))
+        self.registerButton.setGeometry(QRect(310, 520, 201, 56))
         self.registerButton.setStyleSheet(
             "QPushButton{\n"
             "	color:black;\n"
-            "	background-color:#F15156;\n"
+            "	background-color:#F39237;\n"
             "	border-radius:15px\n"
+            "}\n"
+            "\n"
+            "QPushButton:hover{\n"
+            "	background-color:#CB7A2F;\n"
+            "}\n"
+            "\n"
+            "QPushButton:pressed{\n"
+            "	background-color:#A56326;\n"
+            "}"
+        )
+        self.usersFrame = QFrame(self.frame)
+        self.usersFrame.setObjectName("usersFrame")
+        self.usersFrame.setGeometry(QRect(60, 140, 551, 371))
+        self.usersFrame.setFrameShape(QFrame.StyledPanel)
+        self.usersFrame.setFrameShadow(QFrame.Raised)
+        self.deleteUserButton = QPushButton(self.frame)
+        self.deleteUserButton.setObjectName("deleteUserButton")
+        self.deleteUserButton.setIcon(QIcon("assets/images/garbage.png"))
+        self.deleteUserButton.setIconSize(QSize(100, 100))  # set the size of the icon
+        self.deleteUserButton.setGeometry(QRect(550, 520, 56, 56))
+        self.deleteUserButton.setStyleSheet(
+            "QPushButton{\n"
+            "	background-color:#F15156;\n"
+            "	border-radius:28px\n"
             "}\n"
             "\n"
             "QPushButton:hover{\n"
@@ -135,11 +159,6 @@ class Ui_SelectUserWindow(object):
             "	background-color:rgb(121, 38, 40);\n"
             "}"
         )
-        self.usersFrame = QFrame(self.frame)
-        self.usersFrame.setObjectName("usersFrame")
-        self.usersFrame.setGeometry(QRect(60, 140, 551, 371))
-        self.usersFrame.setFrameShape(QFrame.StyledPanel)
-        self.usersFrame.setFrameShadow(QFrame.Raised)
 
         self.horizontalLayout.addWidget(self.frame)
 
