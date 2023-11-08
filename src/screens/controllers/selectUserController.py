@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QMainWindow, QCheckBox, QVBoxLayout
 from screens.selectUserScreen import Ui_SelectUserWindow
 from database.connection.studantController import studantsController
+from PySide6.QtWidgets import QButtonGroup
 
 
 class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
@@ -20,11 +21,15 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
 
     def setStudantsInFrame(self):
         studants = studantsController().getStudants()
+        button_group = QButtonGroup(self)
+        button_group.setExclusive(True)
+
         for studant in studants:
-            print(studant)
             studantCheckBox = QCheckBox(studant[1])
             studantCheckBox.setObjectName(studant[1] + "CheckBox")
             studantCheckBox.setStyleSheet("color:black;font-size:24px;")
+
+            button_group.addButton(studantCheckBox)
 
             self.usersFrame.setLayout(QVBoxLayout())
             self.usersFrame.layout().addWidget(studantCheckBox)
