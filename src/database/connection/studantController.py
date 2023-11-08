@@ -2,52 +2,77 @@ import sqlite3
 from pathlib import Path
 from database.studantModel import StudantModel
 
+"""Controls all the database manipulation for the studants table"""
+
 
 class studantsController:
     def __init__(self) -> None:
+        # Sets the database dir as the root
         self.__ROOT_DIR = Path(__file__).parent.parent
+        # Sets the database name
         self.__DB_NAME = "studants.db"
+        # Sets the complete database file path
         self.__DB_FILE = self.__ROOT_DIR / self.__DB_NAME
+
+        # Triggers the function that create the database if needed
         self.__makeDataBase()
 
     def create(self, studant: StudantModel):
+        """Creates a new studant in the database using the StudantModel class"""
+
+        # sql command
         sql = "INSERT INTO studants (username, enrollment_number, password) VALUES (?, ?, ?);"
 
+        # making the connection
         conn = sqlite3.connect(self.__DB_FILE)
         cursor = conn.cursor()
 
+        # executing the command with the parameters
         cursor.execute(
             sql, (studant.username, studant.enrollment_number, studant.password)
         )
 
         conn.commit()
 
+        # closing everything
         cursor.close()
         conn.close()
 
-    def delete(self, studant: StudantModel):
-        sql = "DELETE FROM products WHERE id = ?;"
+    def delete(self, studantid: int):
+        """Deletes a studant from the database using the studant id"""
 
+        # sql command
+        sql = "DELETE FROM studants WHERE id = ?;"
+
+        # making the connection
         conn = sqlite3.connect(self.__DB_FILE)
         cursor = conn.cursor()
 
-        cursor.execute(sql, (studant.id,))
+        # executing the command with the parameters
+        cursor.execute(sql, (studantid,))
 
         conn.commit()
 
+        # closing everything
         cursor.close()
         conn.close()
 
-    def getStudants(self):
+    def getStudants(self) -> list:
+        """Returns a list of all the studants in the database"""
+
+        # sql command
         sql = "SELECT * FROM studants;"
 
         conn = sqlite3.connect(self.__DB_FILE)
         cursor = conn.cursor()
 
+        # executing the command
         cursor.execute(sql)
 
+        # get the list of studants from the quary
         studants = cursor.fetchall()
 
+        # closing everything
         cursor.close()
         conn.close()
 
