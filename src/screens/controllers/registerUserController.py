@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QMainWindow, QMessageBox
 from screens.registerScreen import Ui_RegisterUserWindow
 from database.connection.studantController import studantsController
 from database.studantModel import StudantModel
+from PySide6.QtGui import QRegularExpressionValidator
 
 """This module is responsible for the register user window
 All kinds of verification and database manipulation is done here"""
@@ -13,7 +14,12 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
         self.setupUi(self)
         ############################
 
+        self.__ONLY_LETTERS_REGEX = QRegularExpressionValidator("[a-zA-Z]+")
+        self.__ONLY_NUMBBER_REGEX = QRegularExpressionValidator("[0-9]+")
+
         self.__configButtons()
+
+        self.__inputsValidation()
 
         ############################
 
@@ -24,6 +30,14 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
 
         self.returnButton.clicked.connect(self.returnButtonClicked)
         self.registerButton.clicked.connect(self.registerButtonClicked)
+
+    def __inputsValidation(self):
+        """This method validates all the inputs in the screen"""
+
+        # Validate the username input
+        self.usernameInput.setValidator(self.__ONLY_LETTERS_REGEX)
+        # Validate the matricula input
+        self.matriculaInput.setValidator(self.__ONLY_NUMBBER_REGEX)
 
     def registerButtonClicked(self):
         """This method is triggered by the register button, it creates a new user in the database
