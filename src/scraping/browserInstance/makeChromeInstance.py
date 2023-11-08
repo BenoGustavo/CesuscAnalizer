@@ -1,6 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-import chromedriver_autoinstaller
+from get_chrome_driver import GetChromeDriver
 
 # Chrome Options
 # https://peter.sh/experiments/chromium-command-line-switches/
@@ -20,8 +20,9 @@ else:
 
 
 def makeBrowser(*options: str) -> webdriver.Chrome:
-    # check the version of the chromedriver
-    chromedriver_autoinstaller.install(path=CHROME_DRIVER_PATH.parent)
+    # check the version of the chromedriver and download the latest version
+    get_driver = GetChromeDriver()
+    get_driver.install(output_path=str(CHROME_DRIVER_PATH.parent))
 
     chrome_options = webdriver.ChromeOptions()
 
