@@ -3,6 +3,7 @@ from screens.registerScreen import Ui_RegisterUserWindow
 from database.connection.studantController import studantsController
 from database.studantModel import StudantModel
 from PySide6.QtGui import QRegularExpressionValidator
+from scraping.scrapper import verifyStudantInformation
 
 """This module is responsible for the register user window
 All kinds of verification and database manipulation is done here"""
@@ -66,6 +67,14 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
         username = self.usernameInput.text()
         enrollment_number = self.matriculaInput.text()
         password = self.passwordInput.text()
+
+        if (verifyStudantInformation(enrollment_number, password)) == False:
+            self.__showErrorMessage(
+                "Sua matrícula ou senha incorretos",
+                QMessageBox.Icon.Warning,
+                "Falha ao registrar usuário",
+            )
+            return
 
         # create a new user from the studant model and then create it in the database
         newStudant = StudantModel(username, enrollment_number, password)
