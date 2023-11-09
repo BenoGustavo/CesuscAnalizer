@@ -13,7 +13,8 @@ def createReportsDir(filePath):
     mkdir(filePath)
 
 
-URL = "https://cesusc.edu.br/"
+URL = "https://graduacao.cesusc.edu.br/projetos/nucleo/uteis/login.php?&tid=0&lid=0&pid=24&sid=98f8ec09184&&arq_ret=R5QT1WSRQBMCVQVPFFQSF99MCT5RT44Q9WRW0RBM0FMM5QQ4R4CV59RWRF1F5SWCW0"
+# URL = "https://cesusc.edu.br/"
 
 
 ROOT_PATH = Path(__file__).parent
