@@ -7,8 +7,6 @@ from get_chrome_driver import GetChromeDriver
 
 from sys import platform
 from pathlib import Path
-import shutil
-import os
 
 ROOT_PATH = Path(__file__).parent
 BIN_PATH = ROOT_PATH / "bin"
@@ -35,7 +33,7 @@ def makeBrowser(*options: str) -> webdriver.Chrome:
     getDriver = GetChromeDriver()
 
     # get the path of the chromedriver that have the version of the chrome installed
-    CHROME_DRIVER_PATH = getChromeDriverPath(getDriver.get_chrome_version())
+    CHROME_DRIVER_PATH = getChromeDriverPath(getDriver.matching_version())
 
     # if the chromedriver is not downloaded yet or the version is not the same as the chrome installed
     if not CHROME_DRIVER_PATH.exists():
