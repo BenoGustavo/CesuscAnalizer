@@ -70,26 +70,36 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
         self.enrollment_number = self.matriculaInput.text()
         self.password = self.passwordInput.text()
 
-        self.checkIfUserExistsOnCesusc()
+        # Trigger the worker and new threads to check if the user exists on cesusc, and don't crash the aplication
+        self.__checkIfUserExistsOnCesusc()
 
         # clear all the fields
         self.usernameInput.clear()
         self.matriculaInput.clear()
         self.passwordInput.clear()
 
-    def checkIfUserExistsOnCesusc(self) -> bool:
-        # create a new thread to create the user in the database and checks if the user exists
+    def __checkIfUserExistsOnCesusc(self) -> bool:
+        """This method creates a new thread and a new worker to check if the user exists on cesusc, it also connects the signals and slots
+
+        This method deactivate the buttons while the worker is running and then activate them again when the worker finishes
+        showing a message if the user was created or not
+        """
+
+        # create a new thread and a new worker
         self.thread = QThread()
         self.worker = Worker(self.enrollment_number, self.password)
 
+        # connect the signals and slots
         self.worker.moveToThread(self.thread)
         self.thread.started.connect(self.worker.run)
 
         self.worker.finished.connect(self.thread.quit)
 
+        # delete the thread and the worker when they finish
         self.thread.finished.connect(self.thread.deleteLater)
         self.worker.finished.connect(self.worker.deleteLater)
 
+        # Change the button stylesheets and disable them while the worker is running
         self.worker.started.connect(
             lambda: (
                 self.registerButton.setEnabled(False),
@@ -102,6 +112,8 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
                 ),
             )
         )
+
+        # When the worker finishes, it will trigger this function
         self.worker.finished.connect(self.workerFinished)
 
         self.thread.start()
@@ -113,6 +125,9 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
         )
 
     def workerFinished(self, isStudantCredentialsValid: bool):
+        """This method is triggered when the worker finishes, it gets the result from the worker quary and
+        then decideses if the user will be create it in the database"""
+
         if not isStudantCredentialsValid:
             self.showErrorMessage(
                 "Sua matrícula ou senha incorretos",
@@ -120,11 +135,13 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
                 "Falha ao registrar usuário",
             )
 
+            # Return the stylesheets to the original and enable the buttons
             self.returnButton.setStyleSheet(self.__returnBtnStylesheet)
             self.registerButton.setStyleSheet(self.__registerBtnStylesheet)
-
             self.returnButton.setEnabled(True)
             self.registerButton.setEnabled(True)
+
+            # Do and early return because the user doesn't exists
             return
 
         # create a new user from the studant model and then create it in the database
@@ -138,9 +155,9 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
             "Usuário registrado",
         )
 
+        # Return the stylesheets to the original and enable the buttons
         self.returnButton.setStyleSheet(self.__returnBtnStylesheet)
         self.registerButton.setStyleSheet(self.__registerBtnStylesheet)
-
         self.returnButton.setEnabled(True)
         self.registerButton.setEnabled(True)
 
