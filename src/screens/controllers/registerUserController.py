@@ -15,6 +15,8 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
         super().__init__(parent)
         self.setupUi(self)
         ############################
+        self.__registerBtnStylesheet = self.registerButton.styleSheet()
+        self.__returnBtnStylesheet = self.returnButton.styleSheet()
 
         self.__ONLY_LETTERS_REGEX = QRegularExpressionValidator("[a-zA-Z]+")
         self.__ONLY_NUMBBER_REGEX = QRegularExpressionValidator("[0-9]+")
@@ -22,7 +24,6 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
         self.__configButtons()
 
         self.__inputsValidation()
-
         ############################
 
         self.show()
@@ -65,23 +66,21 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
             return
 
         # get the text from the inputs
-        username = self.usernameInput.text()
-        enrollment_number = self.matriculaInput.text()
-        password = self.passwordInput.text()
+        self.username = self.usernameInput.text()
+        self.enrollment_number = self.matriculaInput.text()
+        self.password = self.passwordInput.text()
 
-        self.checkIfUserExistsOnCesusc(username, enrollment_number, password)
+        self.checkIfUserExistsOnCesusc()
 
         # clear all the fields
         self.usernameInput.clear()
         self.matriculaInput.clear()
         self.passwordInput.clear()
 
-    def checkIfUserExistsOnCesusc(
-        self, username: str, enrollment_number: str, password: str
-    ) -> bool:
+    def checkIfUserExistsOnCesusc(self) -> bool:
         # create a new thread to create the user in the database and checks if the user exists
         self.thread = QThread()
-        self.worker = Worker(username, enrollment_number, password, self)
+        self.worker = Worker(self.enrollment_number, self.password)
 
         self.worker.moveToThread(self.thread)
         self.thread.started.connect(self.worker.run)
@@ -91,8 +90,19 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
         self.thread.finished.connect(self.thread.deleteLater)
         self.worker.finished.connect(self.worker.deleteLater)
 
-        self.worker.started.connect(lambda: self.registerButton.setEnabled(False))
-        self.worker.finished.connect(lambda: self.registerButton.setEnabled(True))
+        self.worker.started.connect(
+            lambda: (
+                self.registerButton.setEnabled(False),
+                self.registerButton.setStyleSheet(
+                    "border-radius:15px;color:black;background-color:rgb(82, 88, 80);"
+                ),
+                self.returnButton.setEnabled(False),
+                self.returnButton.setStyleSheet(
+                    "border-radius:30px;border:2px solid #6E7DAB; background-color:rgb(156, 156, 156);"
+                ),
+            )
+        )
+        self.worker.finished.connect(self.workerFinished)
 
         self.thread.start()
 
@@ -101,6 +111,38 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
             QMessageBox.Icon.Information,
             "Verificando informações",
         )
+
+    def workerFinished(self, isStudantCredentialsValid: bool):
+        if not isStudantCredentialsValid:
+            self.showErrorMessage(
+                "Sua matrícula ou senha incorretos",
+                QMessageBox.Icon.Warning,
+                "Falha ao registrar usuário",
+            )
+
+            self.returnButton.setStyleSheet(self.__returnBtnStylesheet)
+            self.registerButton.setStyleSheet(self.__registerBtnStylesheet)
+
+            self.returnButton.setEnabled(True)
+            self.registerButton.setEnabled(True)
+            return
+
+        # create a new user from the studant model and then create it in the database
+        newStudant = StudantModel(self.username, self.enrollment_number, self.password)
+        studantsController().create(newStudant)
+
+        # show the popup saying that the user was created
+        self.showErrorMessage(
+            "Usuário registrado com sucesso!",
+            QMessageBox.Icon.Information,
+            "Usuário registrado",
+        )
+
+        self.returnButton.setStyleSheet(self.__returnBtnStylesheet)
+        self.registerButton.setStyleSheet(self.__registerBtnStylesheet)
+
+        self.returnButton.setEnabled(True)
+        self.registerButton.setEnabled(True)
 
     def returnButtonClicked(self):
         """This method is triggered by the return button, it hides the current window and shows the select user window"""
@@ -130,43 +172,21 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
 
 class Worker(QObject):
     started = Signal()
-    finished = Signal()
+    finished = Signal(bool)
 
     def __init__(
         self,
-        username,
         enrollment_number,
         password,
-        RegisterUserWindowInstance: RegisterUserWindow,
         parent: QObject = None,
     ) -> None:
         super().__init__(parent)
-        self.username = username
         self.enrollment_number = enrollment_number
         self.password = password
-        self.registerUserWindowInstance = RegisterUserWindowInstance
 
     def run(self):
         self.started.emit()
 
-        if (verifyStudantInformation(self.enrollment_number, self.password)) == False:
-            self.registerUserWindowInstance.showErrorMessage(
-                "Sua matrícula ou senha incorretos",
-                QMessageBox.Icon.Warning,
-                "Falha ao registrar usuário",
-            )
-            self.finished.emit()
-            return
+        result = verifyStudantInformation(self.enrollment_number, self.password)
 
-        # create a new user from the studant model and then create it in the database
-        newStudant = StudantModel(self.username, self.enrollment_number, self.password)
-        studantsController().create(newStudant)
-
-        # show the popup saying that the user was created
-        self.registerUserWindowInstance.showErrorMessage(
-            "Usuário registrado com sucesso!",
-            QMessageBox.Icon.Information,
-            "Usuário registrado",
-        )
-
-        self.finished.emit()
+        self.finished.emit(result)
