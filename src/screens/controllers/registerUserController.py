@@ -4,6 +4,7 @@ from database.connection.studantController import studantsController
 from database.studantModel import StudantModel
 from PySide6.QtGui import QRegularExpressionValidator
 from scraping.scrapper import verifyStudantInformation
+from PySide6.QtCore import QObject, Signal, QThread
 
 """This module is responsible for the register user window
 All kinds of verification and database manipulation is done here"""
@@ -56,7 +57,7 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
             or self.passwordInput.isModified() == False
         ):
             # show the popup if needed
-            self.__showErrorMessage(
+            self.showErrorMessage(
                 "Preencha todos os campos",
                 QMessageBox.Icon.Warning,
                 "Ops! Os campos não foram preenchidos",
@@ -68,29 +69,38 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
         enrollment_number = self.matriculaInput.text()
         password = self.passwordInput.text()
 
-        if (verifyStudantInformation(enrollment_number, password)) == False:
-            self.__showErrorMessage(
-                "Sua matrícula ou senha incorretos",
-                QMessageBox.Icon.Warning,
-                "Falha ao registrar usuário",
-            )
-            return
-
-        # create a new user from the studant model and then create it in the database
-        newStudant = StudantModel(username, enrollment_number, password)
-        studantsController().create(newStudant)
-
-        # show the popup saying that the user was created
-        self.__showErrorMessage(
-            "Usuário registrado com sucesso!",
-            QMessageBox.Icon.Information,
-            "Usuário registrado",
-        )
+        self.checkIfUserExistsOnCesusc(username, enrollment_number, password)
 
         # clear all the fields
         self.usernameInput.clear()
         self.matriculaInput.clear()
         self.passwordInput.clear()
+
+    def checkIfUserExistsOnCesusc(
+        self, username: str, enrollment_number: str, password: str
+    ) -> bool:
+        # create a new thread to create the user in the database and checks if the user exists
+        self.thread = QThread()
+        self.worker = Worker(username, enrollment_number, password, self)
+
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+
+        self.worker.finished.connect(self.thread.quit)
+
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.worker.finished.connect(self.worker.deleteLater)
+
+        self.worker.started.connect(lambda: self.registerButton.setEnabled(False))
+        self.worker.finished.connect(lambda: self.registerButton.setEnabled(True))
+
+        self.thread.start()
+
+        self.showErrorMessage(
+            "Estamos verificando suas informações, por favor aguarde",
+            QMessageBox.Icon.Information,
+            "Verificando informações",
+        )
 
     def returnButtonClicked(self):
         """This method is triggered by the return button, it hides the current window and shows the select user window"""
@@ -104,7 +114,7 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
         self.selectUserWindow = SelectUserWindow()
         self.selectUserWindow.show()
 
-    def __showErrorMessage(
+    def showErrorMessage(
         self, message: str, icon: QMessageBox.Icon, title: str
     ) -> None:
         """This method creates a QMessageBox with the given parameters and then execute it"""
@@ -116,3 +126,47 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
         msgBox.setStandardButtons(QMessageBox.Ok)
 
         msgBox.exec()
+
+
+class Worker(QObject):
+    started = Signal()
+    finished = Signal()
+
+    def __init__(
+        self,
+        username,
+        enrollment_number,
+        password,
+        RegisterUserWindowInstance: RegisterUserWindow,
+        parent: QObject = None,
+    ) -> None:
+        super().__init__(parent)
+        self.username = username
+        self.enrollment_number = enrollment_number
+        self.password = password
+        self.registerUserWindowInstance = RegisterUserWindowInstance
+
+    def run(self):
+        self.started.emit()
+
+        if (verifyStudantInformation(self.enrollment_number, self.password)) == False:
+            self.registerUserWindowInstance.showErrorMessage(
+                "Sua matrícula ou senha incorretos",
+                QMessageBox.Icon.Warning,
+                "Falha ao registrar usuário",
+            )
+            self.finished.emit()
+            return
+
+        # create a new user from the studant model and then create it in the database
+        newStudant = StudantModel(self.username, self.enrollment_number, self.password)
+        studantsController().create(newStudant)
+
+        # show the popup saying that the user was created
+        self.registerUserWindowInstance.showErrorMessage(
+            "Usuário registrado com sucesso!",
+            QMessageBox.Icon.Information,
+            "Usuário registrado",
+        )
+
+        self.finished.emit()
