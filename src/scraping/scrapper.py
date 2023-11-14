@@ -1,10 +1,16 @@
+# My imports
 from scraping.browserInstance.makeChromeInstance import makeBrowser
 from scraping.utils import URL, WAITING_TIME
+
+# Selenium imports
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
+
+# Beautiful soup imports
+from bs4 import BeautifulSoup
 
 
 def verifyStudantInformation(registrationNumber: str, password: str) -> bool:
@@ -176,6 +182,20 @@ class Scrapper:
                 EC.presence_of_element_located((By.CLASS_NAME, "btn-voltar"))
             )
             returnButton.click()
+
+    def formatingSubejectData(self):
+        for index, subjectHtml in enumerate(self.subjectPagesHtml):
+            # parse the html to a bs4 object
+            soup = BeautifulSoup(subjectHtml, "html.parser")
+
+            # select the main table body
+            tableBody = soup.select_one(
+                "table.u-responsive-table:nth-child(4) > tbody:nth-child(3)"
+            )
+
+            tableRows = tableBody.find_all("tr")
+
+            frequencyTable = soup.select_one("table.u-responsive-table:nth-child(5)")
 
 
 if __name__ == "__main__":
