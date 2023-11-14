@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QMainWindow, QCheckBox, QVBoxLayout, QMessageBox
 from screens.selectUserScreen import Ui_SelectUserWindow
 from database.connection.studantController import studantsController
 from PySide6.QtWidgets import QButtonGroup
+from scraping.scrapper import Scrapper
 
 """This module is responsible for the select user window
 All kinds of verification and database manipulation is done here"""
@@ -13,7 +14,7 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
         self.setupUi(self)
         ############################
 
-        self.selectedStudant: int = None
+        self.selectedStudantId: int = None
 
         self.configButtons()
         self.setStudantsInFrame()
@@ -22,8 +23,39 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
         self.show()
 
     def configButtons(self):
+        self.continueButton.clicked.connect(self.continueButtonClicked)
         self.registerButton.clicked.connect(self.registerButtonClicked)
         self.deleteUserButton.clicked.connect(self.deleteUserButtonClicked)
+
+    def continueButtonClicked(self):
+        """This method do the scrapping for the selected user"""
+
+        if self.selectedStudantId:
+            # Create a pop up asking if the user is sure that he wants to delete the user
+            userChoice = self.__showMessagePopUp(
+                "Esse processo pode demorar um pouco dependo da maquina em que está sendo executada",
+                QMessageBox.Icon.Warning,
+                "Tem certeza que deseja realizar a consulta?",
+                True,
+            )
+
+            # Return if the user clicked cancel
+            if userChoice != QMessageBox.Ok:
+                return
+
+            # Get the user data from the database to use in to the scrappping
+            userData = studantsController().getStudant(self.selectedStudantId)
+
+            # Create a scrapper instance
+            scrapper = Scrapper(userData[2], userData[3])
+
+        else:
+            self.__showMessagePopUp(
+                "Ops! Nenhum usuário foi selecionado, selecione e tente novamente",
+                QMessageBox.Icon.Information,
+                "Erro ao realizar consulta de informações escolares",
+                False,
+            )
 
     def deleteUserButtonClicked(self):
         """This method is triggered by the delete user button
@@ -36,7 +68,7 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
 
         then it deletes the user from the database and updates the users in the frame"""
 
-        if self.selectedStudant:
+        if self.selectedStudantId:
             # Create a pop up asking if the user is sure that he wants to delete the user
             userChoice = self.__showMessagePopUp(
                 "Tem certeza que deseja deletar o usuário?",
@@ -49,7 +81,7 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
                 return
 
             # deletes the user from the database
-            studantsController().delete(self.selectedStudant)
+            studantsController().delete(self.selectedStudantId)
 
             # Show a message saying that the user was deleted
             self.__showMessagePopUp(
@@ -123,8 +155,8 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
         It just sets the selectedStudant variable to the id of the studant that was clicked
         """
         if checked:
-            self.selectedStudant = studant_id
-            print(f"Checkbox for student {self.selectedStudant} is checked")
+            self.selectedStudantId = studant_id
+            print(f"Checkbox for student {self.selectedStudantId} is checked")
         else:
             print(f"Checkbox for student {studant_id} is unchecked")
 
