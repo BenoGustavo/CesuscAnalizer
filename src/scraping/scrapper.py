@@ -149,7 +149,7 @@ class Scrapper:
             )
         )
 
-        # Get the table of the subjects using xpath
+        # Get the table of the subjects by tag name
         subjectsRows = table.find_elements(By.TAG_NAME, "tr")
 
         # Passing through all the subjects
@@ -162,7 +162,7 @@ class Scrapper:
                     )
                 )
 
-                subjectsRows = subjectsRows[0].find_elements(By.TAG_NAME, "tr")
+                subjectsRows = subjectsRows.find_elements(By.TAG_NAME, "tr")
 
             # Click on the subject
             temp = subjectsRows[i].find_element(By.TAG_NAME, "td")
