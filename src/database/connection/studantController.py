@@ -78,6 +78,26 @@ class studantsController:
 
         return studants
 
+    def getStudant(self, id: int) -> list:
+        """Return a list with the data of one studant from the database"""
+
+        sql = "SELECT * FROM studants WHERE id = ?;"
+
+        conn = sqlite3.connect(self.__DB_FILE)
+        cursor = conn.cursor()
+
+        # executing the command
+        cursor.execute(sql, (id,))
+
+        # get the studant data from the quary
+        studant = cursor.fetchone()
+
+        # closing everything
+        cursor.close()
+        conn.close()
+
+        return studant
+
     def __makeDataBase(self):
         """
         This method should be called anywhere else only in the studantController constructor
