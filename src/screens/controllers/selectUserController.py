@@ -46,8 +46,21 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
             # Get the user data from the database to use in to the scrappping
             userData = studantsController().getStudant(self.selectedStudantId)
 
+            self.continueButton.setText("Consultando...")
+            self.continueButton.setDisabled(True)
+
             # Create a scrapper instance
             scrapper = Scrapper(userData[1], userData[2], userData[3])
+
+            self.continueButton.setText("Continuar")
+            self.continueButton.setDisabled(False)
+
+            self.__showMessagePopUp(
+                "A consulta foi realizada com sucesso!\n\nSeu arquivo pode ser encontrado dentro da raiz do programa na pasta 'out'",
+                QMessageBox.Icon.Information,
+                "Consulta realizada",
+                True,
+            )
 
         else:
             self.__showMessagePopUp(
