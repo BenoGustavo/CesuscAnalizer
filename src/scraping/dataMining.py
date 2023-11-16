@@ -27,13 +27,13 @@ def formatData(
         # If the data of the next exam is not available, append a default value
         if len(tableRows) == 1:
             subjectData.append("--/--/--")
-            subjectData.append("Sem nota definda")
+            subjectData.append("-")
             subjectData.append("--/--/--")
-            subjectData.append("Sem nota definda")
+            subjectData.append("-")
 
         if len(tableRows) == 2 and i == 1:
             subjectData.append("--/--/--")
-            subjectData.append("Sem nota definda")
+            subjectData.append("-")
 
     studantAverageGrade = getStudantGradeAverage(tableRows)
     pointsToTheStudantBeAproved = getPointsToBeAproved(tableRows)
