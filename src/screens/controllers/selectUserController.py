@@ -70,7 +70,7 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
                 "Ops! Nenhum usuário foi selecionado, selecione e tente novamente",
                 QMessageBox.Icon.Information,
                 "Erro ao realizar consulta de informações escolares",
-                False,
+                True,
             )
 
     def makeScrapper(self, username: str, password: str, registrationNumber: str):
