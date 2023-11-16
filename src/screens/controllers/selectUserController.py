@@ -1,8 +1,16 @@
-from PySide6.QtWidgets import QMainWindow, QCheckBox, QVBoxLayout, QMessageBox
+# Ui imports
 from screens.selectUserScreen import Ui_SelectUserWindow
+
+# Database imports
 from database.connection.studantController import studantsController
+
+# Pyside6 imports
+from PySide6.QtCore import QThread
 from PySide6.QtWidgets import QButtonGroup
-from scraping.scrapper import Scrapper
+from PySide6.QtWidgets import QMainWindow, QCheckBox, QVBoxLayout, QMessageBox
+
+# Worker imports
+from screens.controllers.workers import CesuscScrapperWorker
 
 """This module is responsible for the select user window
 All kinds of verification and database manipulation is done here"""
@@ -13,6 +21,8 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
         super().__init__(parent)
         self.setupUi(self)
         ############################
+        self.__continueButtonStyleSheet = self.continueButton.styleSheet()
+        self.__registerButtonStyleSheet = self.registerButton.styleSheet()
 
         self.selectedStudantId: int = None
 
@@ -50,17 +60,10 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
             self.continueButton.setDisabled(True)
 
             # Create a scrapper instance
-            scrapper = Scrapper(userData[1], userData[2], userData[3])
+            self.makeScrapper(userData[1], userData[2], userData[3])
 
             self.continueButton.setText("Continuar")
             self.continueButton.setDisabled(False)
-
-            self.__showMessagePopUp(
-                "A consulta foi realizada com sucesso!\n\nSeu arquivo pode ser encontrado dentro da raiz do programa na pasta 'out'",
-                QMessageBox.Icon.Information,
-                "Consulta realizada",
-                True,
-            )
 
         else:
             self.__showMessagePopUp(
@@ -69,6 +72,63 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
                 "Erro ao realizar consulta de informações escolares",
                 False,
             )
+
+    def makeScrapper(self, username: str, password: str, registrationNumber: str):
+        """This method creates a new thread and a new worker to get the subjects data from cesusc website, it also connects the signals and slots
+
+        This method deactivate the buttons while the worker is running and then activate them again when the worker finishes
+        showing a feedback message
+        """
+
+        # create a new thread and a new worker
+        self.thread = QThread()
+        self.worker = CesuscScrapperWorker(username, password, registrationNumber)
+
+        # connect the signals and slots
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+
+        self.worker.finished.connect(self.thread.quit)
+
+        # delete the thread and the worker when they finish
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.worker.finished.connect(self.worker.deleteLater)
+
+        # Change the button stylesheets and disable them while the worker is running
+        self.worker.started.connect(
+            lambda: (
+                self.continueButton.setEnabled(False),
+                self.continueButton.setStyleSheet(
+                    "border-radius:15px;color:black;background-color:rgb(82, 88, 80);"
+                ),
+                self.registerButton.setEnabled(False),
+                self.registerButton.setStyleSheet(
+                    "border-radius:15px;color:black;background-color:#A56326;"
+                ),
+            )
+        )
+
+        # When the worker finishes, it will trigger this function
+        self.worker.finished.connect(self.workerFinished)
+
+        self.thread.start()
+
+        # Creates a message saying that the worker finished
+        self.__showMessagePopUp(
+            "A consulta foi realizada com sucesso!\n\nSeu arquivo pode ser encontrado dentro da raiz do programa na pasta 'out'",
+            QMessageBox.Icon.Information,
+            "Consulta realizada",
+            True,
+        )
+
+    def workerFinished(self):
+        """This method is triggered when the worker finishes, it restores the buttons to the original state"""
+
+        self.continueButton.setStyleSheet(self.__continueButtonStyleSheet)
+        self.continueButton.setEnabled(True)
+
+        self.registerButton.setStyleSheet(self.__registerButtonStyleSheet)
+        self.registerButton.setEnabled(True)
 
     def deleteUserButtonClicked(self):
         """This method is triggered by the delete user button
