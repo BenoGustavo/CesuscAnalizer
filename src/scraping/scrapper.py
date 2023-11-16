@@ -1,6 +1,7 @@
 # My imports
 from scraping.browserInstance.makeChromeInstance import makeBrowser
 from scraping.utils import URL, WAITING_TIME
+from scraping.xlsxWriter import writeXlsxFile
 
 # Selenium imports
 from selenium.webdriver.common.by import By
@@ -56,7 +57,9 @@ def verifyStudantInformation(registrationNumber: str, password: str) -> bool:
 
 
 class Scrapper:
-    def __init__(self, registrationNumber: str, password: str) -> None:
+    def __init__(self, username: str, registrationNumber: str, password: str) -> None:
+        self.studantUsername = username
+
         self.subjectNamesList = []
         self.subjectPagesHtml = []
         self.formatedSubjectsData = []
@@ -255,7 +258,7 @@ class Scrapper:
                 )
             )
 
-        print(*self.formatedSubjectsData, sep="\n\n")
+        writeXlsxFile(self.formatedSubjectsData, self.studantUsername)
 
 
 def getStudantGradeAverage(grades: list[str]) -> float | int:
