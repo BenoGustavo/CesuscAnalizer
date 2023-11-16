@@ -26,15 +26,15 @@ URL = "https://graduacao.cesusc.edu.br/projetos/nucleo/uteis/login.php?&tid=0&li
 
 # Write headers to the worksheet
 XLSX_HEADERS = [
-    "Nome da Materia",
-    "N1 - Dia da prova",
+    "Nome da Disciplina",
+    "N1 - Data da prova",
     "N1 - Nota",
-    "N2 - Dia da prova",
+    "N2 - Data da prova",
     "N2 - Nota",
-    "N3 - Dia da prova",
+    "N3 - Data da prova",
     "N3 - Nota",
-    "Media da materia",
-    "Pontos para aprovaçao",
+    "Média da Disciplina",
+    "Pontos para faltantes aprovaçao",
     "Maximo de faltas",
     "Suas Faltas",
     "Quanto ainda pode ser faltado",
