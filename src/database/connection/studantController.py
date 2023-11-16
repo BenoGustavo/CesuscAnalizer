@@ -1,4 +1,5 @@
 import sqlite3
+import sys
 from pathlib import Path
 from database.studantModel import StudantModel
 
@@ -8,7 +9,13 @@ from database.studantModel import StudantModel
 class studantsController:
     def __init__(self) -> None:
         # Sets the database dir as the root
-        self.__ROOT_DIR = Path(__file__).parent.parent
+        if getattr(sys, "frozen", False):
+            applicationPath = Path(sys._MEIPASS)
+        else:
+            applicationPath = Path(__file__).parent.parent
+
+        # Sets the database dir as the root
+        self.__ROOT_DIR = applicationPath
         # Sets the database name
         self.__DB_NAME = "studants.db"
         # Sets the complete database file path
