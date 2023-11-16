@@ -45,8 +45,15 @@ def writeXlsxFile(formatedData: list[dict], username: str):
     # starts from the second row because the first row is the headers
     row = 2
     for subject in formatedData:
-        # the first value is the subject name || tranforming the dict keys into a string
-        worksheet.cell(row=row, column=1, value=str(list(subject.keys())))
+        # the first value is the subject name || tranforming the dict keys into a string and removing the brackets and quotes
+        worksheet.cell(
+            row=row,
+            column=1,
+            value=str(list(subject.keys()))
+            .replace("[", "")
+            .replace("]", "")
+            .replace("'", ""),
+        )
 
         # get all the items from the dict and interate over them
         for key, listOfSubjectData in subject.items():
