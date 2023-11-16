@@ -113,14 +113,6 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
 
         self.thread.start()
 
-        # Creates a message saying that the worker finished
-        self.__showMessagePopUp(
-            "A consulta foi realizada com sucesso!\n\nSeu arquivo pode ser encontrado dentro da raiz do programa na pasta 'out'",
-            QMessageBox.Icon.Information,
-            "Consulta realizada",
-            True,
-        )
-
     def workerFinished(self):
         """This method is triggered when the worker finishes, it restores the buttons to the original state"""
 
@@ -129,6 +121,14 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
 
         self.registerButton.setStyleSheet(self.__registerButtonStyleSheet)
         self.registerButton.setEnabled(True)
+
+        # Creates a message saying that the worker finished
+        self.__showMessagePopUp(
+            "A consulta foi realizada com sucesso!\n\nSeu arquivo pode ser encontrado dentro da raiz do programa na pasta 'out'",
+            QMessageBox.Icon.Information,
+            "Consulta realizada",
+            True,
+        )
 
     def deleteUserButtonClicked(self):
         """This method is triggered by the delete user button
@@ -168,9 +168,9 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
             self.updateStudantsInFrame()
         else:
             self.__showMessagePopUp(
-                "Erro ao deletar usuário",
-                QMessageBox.Icon.Information,
                 "Ops! Nenhum usuário foi selecionado, selecione e tente novamente",
+                QMessageBox.Icon.Information,
+                "Erro ao deletar usuário",
                 False,
             )
 
