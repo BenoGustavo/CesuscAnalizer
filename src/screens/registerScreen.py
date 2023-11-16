@@ -119,7 +119,7 @@ class Ui_RegisterUserWindow(object):
         self.tittleLabel.setObjectName("tittleLabel")
         self.tittleLabel.setGeometry(QRect(60, 60, 301, 41))
         font = QFont()
-        font.setPointSize(40)
+        font.setPointSize(35)
         font.setBold(True)
         self.tittleLabel.setFont(font)
         self.tittleLabel.setStyleSheet("color:black;")
