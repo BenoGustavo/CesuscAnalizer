@@ -65,7 +65,7 @@ class Scrapper:
         self.formatedSubjectsData = []
 
         # Create a browser instance
-        self.chromeBrowser = makeBrowser()
+        self.chromeBrowser = makeBrowser("--headless")
         self.chromeBrowser.get(URL)
 
         self.loginCesuscWebsite(registrationNumber, password)
