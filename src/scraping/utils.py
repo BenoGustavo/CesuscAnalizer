@@ -1,29 +1,58 @@
 from pathlib import Path
 from os import path as systemPath
 from os import mkdir
+import datetime
 
 
-def isReportsDirCreated(filePath) -> bool:
+def getCurrentTime() -> str:
+    # get current date and time
+    now = datetime.now()
+    current_time = now.strftime("%d|%m|%Y - %H;%M")
+
+    return current_time
+
+
+def isFileCreated(filePath) -> bool:
     if systemPath.exists(filePath):
         return True
     return False
 
 
-def createReportsDir(filePath):
+def createReportsDir(filePath) -> None:
     mkdir(filePath)
 
 
 URL = "https://graduacao.cesusc.edu.br/projetos/nucleo/uteis/login.php?&tid=0&lid=0&pid=24&sid=98f8ec09184&&arq_ret=R5QT1WSRQBMCVQVPFFQSF99MCT5RT44Q9WRW0RBM0FMM5QQ4R4CV59RWRF1F5SWCW0"
-# URL = "https://cesusc.edu.br/"
 
+# Write headers to the worksheet
+XLSX_HEADERS = [
+    "Nome da Materia",
+    "N1 - Dia da prova",
+    "N1 - Nota",
+    "N2 - Dia da prova",
+    "N2 - Nota",
+    "N3 - Dia da prova",
+    "N3 - Nota",
+    "Media da materia",
+    "Pontos para aprovaçao",
+    "Maximo de faltas",
+    "Suas Faltas",
+    "Quanto ainda pode ser faltado",
+    "Frequencia em %",
+]
 
 ROOT_PATH = Path(__file__).parent
 
 CREDENCIALS_PATH = ROOT_PATH / ".credentials.json"
 
-REPORTS_PATH = ROOT_PATH / "reports"
+REPORTS_PATH = ROOT_PATH / "out" / "reports"
 
-EXCEL_PATH = ROOT_PATH / "reports" / "Cesusc_Personal_info.xlsx"
+
+def getExcelPath(username: str):
+    EXCEL_PATH = REPORTS_PATH / username / "Cesusc_Info.xlsx"
+
+    return EXCEL_PATH
+
 
 WAITING_TIME = 5
 
