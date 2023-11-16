@@ -47,7 +47,7 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
             userData = studantsController().getStudant(self.selectedStudantId)
 
             # Create a scrapper instance
-            scrapper = Scrapper(userData[2], userData[3])
+            scrapper = Scrapper(userData[1], userData[2], userData[3])
 
         else:
             self.__showMessagePopUp(
