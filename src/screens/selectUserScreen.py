@@ -60,6 +60,7 @@ class Ui_SelectUserWindow(object):
         MainWindow.resize(1012, 752)
         MainWindow.setMinimumSize(QSize(680, 670))
         MainWindow.setStyleSheet("background-color:#6E7DAB;")
+        MainWindow.setWindowIcon(QIcon("assets/images/cesuscIcon.png"))
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QVBoxLayout(self.centralwidget)
