@@ -29,26 +29,6 @@ def verifyStudantInformation(registrationNumber: str, password: str) -> bool:
     chromeBrowser = makeBrowser("--headless")
     chromeBrowser.get(URL)
 
-    ####################################################################
-    #######################old-code-using-other-url#############################
-
-    # wait until the sistema-academico button is loaded then click on the button to open the login form
-    # academicSystem = chromeBrowser.find_element(By.CLASS_NAME, "sistema-academico")
-    # academicSystem.click()
-
-    # List of all opened tabs
-    # openTabs = chromeBrowser.window_handles
-    # Picking the new tab opened
-    # academicSystemTab = openTabs[-1]
-
-    # Changing it on browser
-    # chromeBrowser.switch_to.window(academicSystemTab)
-
-    ####################################################################
-    #########################old-code-using-other-url###########################
-
-    # Getting the inputs from the login form
-
     # Wait to find input on screen
     loginInput = WebDriverWait(chromeBrowser, WAITING_TIME).until(
         # Finding an element on the screen
@@ -79,6 +59,7 @@ class Scrapper:
     def __init__(self, registrationNumber: str, password: str) -> None:
         self.subjectNamesList = []
         self.subjectPagesHtml = []
+        self.formatedSubjectsData = []
 
         # Create a browser instance
         self.chromeBrowser = makeBrowser()
@@ -90,6 +71,9 @@ class Scrapper:
         self.getSubjectsNames()
         self.getSubjectPagesHtml()
         self.formatingSubejectData()
+
+    def getFormatedSubjectData(self):
+        return self.formatedSubjectsData
 
     def loginCesuscWebsite(self, registrationNumber: str, password: str):
         """This method is responsible for login in the cesusc website"""
@@ -194,7 +178,6 @@ class Scrapper:
         # Importing the function that will format the data, this import is here to avoid circular imports
         from scraping.dataMining import formatData
 
-        formatedSubjectsData = []
         for index, subjectHtml in enumerate(self.subjectPagesHtml):
             # parse the html to a bs4 object
             soup = BeautifulSoup(subjectHtml, "html.parser")
@@ -261,7 +244,7 @@ class Scrapper:
                 yourMisses = "Materia ainda não tem registros."
                 howMutchYouCanMiss = "Materia ainda não tem registros."
 
-            formatedSubjectsData.append(
+            self.formatedSubjectsData.append(
                 formatData(
                     tableRows,
                     self.subjectNamesList[index],
@@ -272,7 +255,7 @@ class Scrapper:
                 )
             )
 
-        print(*formatedSubjectsData, sep="\n\n")
+        print(*self.formatedSubjectsData, sep="\n\n")
 
 
 def getStudantGradeAverage(grades: list[str]) -> float | int:
