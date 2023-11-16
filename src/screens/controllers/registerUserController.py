@@ -1,10 +1,17 @@
-from PySide6.QtWidgets import QMainWindow, QMessageBox
+# Window UI
 from screens.registerScreen import Ui_RegisterUserWindow
+
+# Database imports
 from database.connection.studantController import studantsController
 from database.studantModel import StudantModel
+
+# Pyside6 imports
 from PySide6.QtGui import QRegularExpressionValidator
-from scraping.scrapper import verifyStudantInformation
-from PySide6.QtCore import QObject, Signal, QThread
+from PySide6.QtCore import QThread
+from PySide6.QtWidgets import QMainWindow, QMessageBox
+
+# Worker imports
+from screens.controllers.workers import VerifyStudantInformationWorker
 
 """This module is responsible for the register user window
 All kinds of verification and database manipulation is done here"""
@@ -87,7 +94,9 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
 
         # create a new thread and a new worker
         self.thread = QThread()
-        self.worker = Worker(self.enrollment_number, self.password)
+        self.worker = VerifyStudantInformationWorker(
+            self.enrollment_number, self.password
+        )
 
         # connect the signals and slots
         self.worker.moveToThread(self.thread)
@@ -185,25 +194,3 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
         msgBox.setStandardButtons(QMessageBox.Ok)
 
         msgBox.exec()
-
-
-class Worker(QObject):
-    started = Signal()
-    finished = Signal(bool)
-
-    def __init__(
-        self,
-        enrollment_number,
-        password,
-        parent: QObject = None,
-    ) -> None:
-        super().__init__(parent)
-        self.enrollment_number = enrollment_number
-        self.password = password
-
-    def run(self):
-        self.started.emit()
-
-        result = verifyStudantInformation(self.enrollment_number, self.password)
-
-        self.finished.emit(result)
