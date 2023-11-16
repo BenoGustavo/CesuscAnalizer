@@ -217,7 +217,7 @@ class Scrapper:
                     "table.u-responsive-table:nth-child(6) > tbody:nth-child(3) > tr:nth-child(1) > td:nth-child(5)"
                 ).text
             except AttributeError:
-                frequencyInPercentage = "Nenhum registro foi encontrado."
+                frequencyInPercentage = "Disciplina sem registros."
 
             if lastTableData != []:
                 # Remove the % from the string and convert it to int
@@ -243,8 +243,8 @@ class Scrapper:
                         f"Você já passou do limite de faltas ({howMutchYouCanMiss})."
                     )
             else:
-                maxMisses = "Materia ainda não tem registros."
-                yourMisses = "Materia ainda não tem registros."
+                maxClassSkip = "Materia ainda não tem registros."
+                yourMissedClasses = "Materia ainda não tem registros."
                 howMutchYouCanMiss = "Materia ainda não tem registros."
 
             self.formatedSubjectsData.append(
@@ -258,6 +258,7 @@ class Scrapper:
                 )
             )
 
+        # uses the formated info to write a xlsx file
         writeXlsxFile(self.formatedSubjectsData, self.studantUsername)
 
 
@@ -273,10 +274,7 @@ def getStudantGradeAverage(grades: list[str]) -> float | int:
         gradeValue = grades[i].find(attrs={"data-label": "Nota"})
 
         # Check if the grade is defined by the teacher, if not, don't count it
-        if (
-            gradeValue.text.strip() == "Sem nota definda"
-            or gradeValue.text.strip() == "-"
-        ):
+        if gradeValue.text.strip() == "-":
             average += 0
         else:
             count += 1
@@ -301,10 +299,7 @@ def getPointsToBeAproved(grades: list[str]) -> float | int:
         gradeValue = grades[i].find(attrs={"data-label": "Nota"})
 
         # Check if the grade is defined by the teacher, if not, don't count it
-        if (
-            gradeValue.text.strip() == "Sem nota definda"
-            or gradeValue.text.strip() == "-"
-        ):
+        if gradeValue.text.strip() == "-":
             pointsToPass += 0
         else:
             # Replace every comma with a dot and convert it to float then sum it to the rest of the grades
