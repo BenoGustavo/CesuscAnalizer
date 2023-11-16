@@ -1,7 +1,7 @@
 import openpyxl
-from utils import (
+from scraping.utils import (
     XLSX_HEADERS,
-    REPORTS_PATH,
+    getReportsPath,
     getExcelPath,
     isFileCreated,
     createReportsDir,
@@ -9,8 +9,9 @@ from utils import (
 )
 
 
-def writeXlsxFile(formatedData: list, username: str):
-    EXCEL_PATH = getExcelPath(username)
+def writeXlsxFile(formatedData: list[dict], username: str):
+    REPORTS_PATH = getReportsPath(username)
+    EXCEL_PATH = getExcelPath(REPORTS_PATH)
 
     currentTime = getCurrentTime()
 
@@ -36,9 +37,15 @@ def writeXlsxFile(formatedData: list, username: str):
     for col, header in enumerate(XLSX_HEADERS, start=1):
         worksheet.cell(row=1, column=col, value=header)
 
-    ###########################################
-    ######NEED TO WRITE THE REST OF THE DATA HERE#####
-    ###########################################
+    row = 2
+    for subject in formatedData:
+        # the first value is the subject name || tranforming the dict keys into a string
+        worksheet.cell(row=row, column=1, value=str(list(subject.keys())))
+
+        for key, listOfSubjectData in subject.items():
+            for col, value in enumerate(listOfSubjectData, start=2):
+                worksheet.cell(row=row, column=col, value=value)
+        row += 1
 
     # Save the workbook
     workbook.save(filename=EXCEL_PATH)
