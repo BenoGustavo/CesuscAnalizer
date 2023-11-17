@@ -53,6 +53,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from screens.resourcePath import resource_path
+
 
 class Ui_RegisterUserWindow(object):
     def setupUi(self, MainWindow):
@@ -80,7 +82,7 @@ class Ui_RegisterUserWindow(object):
         self.returnButton = QPushButton(self.returnBtnFrame)
         self.returnButton.setObjectName("returnButton")
         self.returnButton.setMinimumSize(QSize(60, 60))
-        self.returnButton.setIcon(QIcon("assets/images/returnArrow.png"))
+        self.returnButton.setIcon(QIcon(resource_path("assets/images/returnArrow.png")))
         self.returnButton.setIconSize(QSize(25, 25))  # set the size of the icon
         self.returnButton.setStyleSheet(
             "QPushButton{\n"

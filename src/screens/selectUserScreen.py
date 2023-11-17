@@ -52,6 +52,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from screens.resourcePath import resource_path
+
 
 class Ui_SelectUserWindow(object):
     def setupUi(self, MainWindow):
@@ -143,7 +145,7 @@ class Ui_SelectUserWindow(object):
         self.usersFrame.setFrameShadow(QFrame.Raised)
         self.deleteUserButton = QPushButton(self.frame)
         self.deleteUserButton.setObjectName("deleteUserButton")
-        self.deleteUserButton.setIcon(QIcon("assets/images/garbage.png"))
+        self.deleteUserButton.setIcon(QIcon(resource_path("assets/images/garbage.png")))
         self.deleteUserButton.setIconSize(QSize(100, 100))  # set the size of the icon
         self.deleteUserButton.setGeometry(QRect(550, 520, 56, 56))
         self.deleteUserButton.setStyleSheet(
