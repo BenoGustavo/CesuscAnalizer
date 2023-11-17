@@ -25,6 +25,13 @@
 -   [Thanks](#thanks)
 -   [Copyright and license](#copyright-and-license)
 
+## Requirements
+
+-   Google Chrome
+-   Python >= 3.10
+
+If you don't have the Google Chrome installed it will freeze the application.
+
 ## Quickstart-for-linux
 
 Setup on Linux🐧(Tested on Ubuntu 22.04.03 LTS)
