@@ -65,7 +65,7 @@ class Scrapper:
         self.formatedSubjectsData = []
 
         # Create a browser instance
-        self.chromeBrowser = makeBrowser("--headless")
+        self.chromeBrowser = makeBrowser()
         self.chromeBrowser.get(URL)
 
         self.loginCesuscWebsite(registrationNumber, password)
@@ -106,7 +106,7 @@ class Scrapper:
         )
 
         # Click on the grades and frequency button
-        gradesAndFrequencyButton[6].click()
+        gradesAndFrequencyButton[7].click()
 
     def settingIframeToChromeDriver(self):
         """This method is responsible for setting the iframe to the chrome driver"""
@@ -128,7 +128,7 @@ class Scrapper:
         sleep(3)
         # Wait for the table to be fully loaded and select it
         table = WebDriverWait(self.chromeBrowser, WAITING_TIME).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "table.slim:nth-child(8)"))
+            EC.presence_of_element_located((By.XPATH, "/html/body/main/div[6]/table"))
         )
 
         # Get the table of the subjects using searching by tag name
