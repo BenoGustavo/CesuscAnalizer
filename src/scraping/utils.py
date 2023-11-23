@@ -34,7 +34,7 @@ XLSX_HEADERS = [
     "N3 - Data da prova",
     "N3 - Nota",
     "Média da Disciplina",
-    "Pontos para faltantes aprovaçao",
+    "Pontos necessarios para aprovaçao",
     "Maximo de faltas",
     "Suas Faltas",
     "Quanto ainda pode ser faltado",
