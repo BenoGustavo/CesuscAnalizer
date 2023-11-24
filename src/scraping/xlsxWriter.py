@@ -27,7 +27,7 @@ def writeXlsxFile(formatedData: list[dict], username: str):
 
         # Create a new sheet with a unique name
         sheet_name = f"{currentTime}_Cesusc"
-        worksheet = workbook.create_sheet(sheet_name)
+        worksheet = workbook.create_sheet(sheet_name, 0)
 
     else:
         # Create a new workbook and worksheet with openpyxl
