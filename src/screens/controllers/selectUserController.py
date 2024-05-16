@@ -81,37 +81,20 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
         """
 
         # create a new thread and a new worker
-        self.thread = QThread()
         self.worker = CesuscScrapperWorker(username, password, registrationNumber)
 
         # connect the signals and slots
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.run)
+        self.worker.run()
 
-        self.worker.finished.connect(self.thread.quit)
-
-        # delete the thread and the worker when they finish
-        self.thread.finished.connect(self.thread.deleteLater)
-        self.worker.finished.connect(self.worker.deleteLater)
-
-        # Change the button stylesheets and disable them while the worker is running
-        self.worker.started.connect(
-            lambda: (
-                self.continueButton.setEnabled(False),
-                self.continueButton.setStyleSheet(
-                    "border-radius:15px;color:black;background-color:rgb(82, 88, 80);"
-                ),
-                self.registerButton.setEnabled(False),
-                self.registerButton.setStyleSheet(
-                    "border-radius:15px;color:black;background-color:#A56326;"
-                ),
-            )
+        self.continueButton.setEnabled(False)
+        self.continueButton.setStyleSheet(
+            "border-radius:15px;color:black;background-color:rgb(82, 88, 80);"
         )
 
-        # When the worker finishes, it will trigger this function
-        self.worker.finished.connect(self.workerFinished)
-
-        self.thread.start()
+        self.registerButton.setEnabled(False)
+        self.registerButton.setStyleSheet(
+            "border-radius:15px;color:black;background-color:#A56326;"
+        )
 
     def workerFinished(self):
         """This method is triggered when the worker finishes, it restores the buttons to the original state"""
