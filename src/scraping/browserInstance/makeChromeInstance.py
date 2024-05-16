@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from get_chrome_driver import GetChromeDriver
+import shutil
 
 # Chrome Options
 # https://peter.sh/experiments/chromium-command-line-switches/
@@ -25,7 +26,7 @@ def getChromeDriverPath(chromeVersion) -> Path:
 
 def removeBinContent(binFolderPath):
     if binFolderPath.exists():
-        binFolderPath.unlink()
+        shutil.rmtree(binFolderPath)
 
 
 def makeBrowser(*options: str) -> webdriver.Chrome:
