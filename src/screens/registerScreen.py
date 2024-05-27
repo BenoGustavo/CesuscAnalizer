@@ -60,7 +60,7 @@ class Ui_RegisterUserWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1012, 752)
+        MainWindow.resize(674, 660)
         MainWindow.setMinimumSize(QSize(674, 660))
         MainWindow.setStyleSheet("background-color:#6E7DAB;")
         MainWindow.setWindowIcon(QIcon("assets/images/cesuscIcon.png"))
@@ -122,7 +122,7 @@ class Ui_RegisterUserWindow(object):
         self.tittleLabel.setObjectName("tittleLabel")
         self.tittleLabel.setGeometry(QRect(60, 60, 301, 41))
         font = QFont()
-        font.setPointSize(35)
+        font.setPointSize(30)
         font.setBold(True)
         self.tittleLabel.setFont(font)
         self.tittleLabel.setStyleSheet("color:black;")
@@ -130,7 +130,7 @@ class Ui_RegisterUserWindow(object):
         self.subTittleLabel.setObjectName("subTittleLabel")
         self.subTittleLabel.setGeometry(QRect(60, 100, 371, 41))
         font1 = QFont()
-        font1.setPointSize(24)
+        font1.setPointSize(16)
         font1.setBold(False)
         font1.setUnderline(False)
         font1.setStrikeOut(False)

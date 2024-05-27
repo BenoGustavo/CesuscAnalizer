@@ -56,10 +56,10 @@ from screens.resourcePath import resource_path
 
 
 class Ui_SelectUserWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow): 
         if not MainWindow.objectName():
             MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1012, 752)
+        MainWindow.resize(680, 670)
         MainWindow.setMinimumSize(QSize(680, 670))
         MainWindow.setStyleSheet("background-color:#6E7DAB;")
         MainWindow.setWindowIcon(QIcon("assets/images/cesuscIcon.png"))
@@ -87,7 +87,7 @@ class Ui_SelectUserWindow(object):
         self.tittleLabel.setObjectName("tittleLabel")
         self.tittleLabel.setGeometry(QRect(60, 40, 521, 51))
         font = QFont()
-        font.setPointSize(40)
+        font.setPointSize(30)
         font.setBold(True)
         self.tittleLabel.setFont(font)
         self.tittleLabel.setStyleSheet("color:black;")
@@ -95,7 +95,7 @@ class Ui_SelectUserWindow(object):
         self.subTittleLabel.setObjectName("subTittleLabel")
         self.subTittleLabel.setGeometry(QRect(60, 90, 451, 41))
         font1 = QFont()
-        font1.setPointSize(24)
+        font1.setPointSize(16)
         font1.setBold(False)
         font1.setUnderline(False)
         font1.setStrikeOut(False)
