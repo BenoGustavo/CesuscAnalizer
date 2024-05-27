@@ -91,6 +91,8 @@ class Ui_SelectUserWindow(object):
         font.setBold(True)
         self.tittleLabel.setFont(font)
         self.tittleLabel.setStyleSheet("color:black;")
+        self.tittleLabel.setAlignment(Qt.AlignCenter)  # Center the text
+
         self.subTittleLabel = QLabel(self.frame)
         self.subTittleLabel.setObjectName("subTittleLabel")
         self.subTittleLabel.setGeometry(QRect(60, 90, 451, 41))
@@ -102,6 +104,7 @@ class Ui_SelectUserWindow(object):
         font1.setKerning(True)
         self.subTittleLabel.setFont(font1)
         self.subTittleLabel.setStyleSheet("color:black;")
+        self.subTittleLabel.setAlignment(Qt.AlignCenter)  # Center the text
         self.continueButton = QPushButton(self.frame)
         self.continueButton.setObjectName("continueButton")
         self.continueButton.setGeometry(QRect(60, 520, 201, 56))

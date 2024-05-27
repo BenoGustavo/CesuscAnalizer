@@ -126,6 +126,7 @@ class Ui_RegisterUserWindow(object):
         font.setBold(True)
         self.tittleLabel.setFont(font)
         self.tittleLabel.setStyleSheet("color:black;")
+
         self.subTittleLabel = QLabel(self.frame)
         self.subTittleLabel.setObjectName("subTittleLabel")
         self.subTittleLabel.setGeometry(QRect(60, 100, 371, 41))
