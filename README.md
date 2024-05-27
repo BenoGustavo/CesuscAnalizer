@@ -58,7 +58,17 @@ Setup on Linux🐧(Tested on Ubuntu 22.04.03 LTS)
 
     `python3 src/app.py` OR `python3.10 src/app.py`
 
--   Now your application is working 😃
+-   If it won't work right away you will need some extra system libs for it to work fine so...
+
+-  This is the error you will probably get:
+
+    ```t.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found. This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.```
+
+-  Fix it with:
+
+    ```sudo apt-get install libxcb-xinerama0 libxcb-xinerama0-dev libxcb1 libxcb1-dev libx11-xcb1 libx11-xcb-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libxcb-cursor0```
+
+-   Now your application may be working 😃
 
 ## Quickstart-for-windows
 
