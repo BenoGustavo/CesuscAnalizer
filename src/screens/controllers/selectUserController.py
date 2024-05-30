@@ -96,9 +96,6 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
             "border-radius:15px;color:black;background-color:#A56326;"
         )
 
-    def workerFinished(self):
-        """This method is triggered when the worker finishes, it restores the buttons to the original state"""
-
         self.continueButton.setStyleSheet(self.__continueButtonStyleSheet)
         self.continueButton.setEnabled(True)
 
