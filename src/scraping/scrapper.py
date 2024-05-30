@@ -279,7 +279,9 @@ def getStudantGradeAverage(grades: list[str]) -> float | int:
         gradeValue = grades[i].find(attrs={"data-label": "Nota"})
 
         # Check if the grade is defined by the teacher, if not, don't count it
-        if gradeValue.text.strip() == "-":
+        if gradeValue is None:
+            average += 0
+        elif gradeValue.text.strip() == "-":
             average += 0
         else:
             count += 1
@@ -304,7 +306,9 @@ def getPointsToBeAproved(grades: list[str]) -> float | int:
         gradeValue = grades[i].find(attrs={"data-label": "Nota"})
 
         # Check if the grade is defined by the teacher, if not, don't count it
-        if gradeValue.text.strip() == "-":
+        if gradeValue is None:
+            pointsToPass += 0
+        elif gradeValue.text.strip() == "-":
             pointsToPass += 0
         else:
             # Replace every comma with a dot and convert it to float then sum it to the rest of the grades
