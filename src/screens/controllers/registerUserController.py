@@ -7,7 +7,6 @@ from database.studantModel import StudantModel
 
 # Pyside6 imports
 from PySide6.QtGui import QRegularExpressionValidator
-from PySide6.QtCore import QThread
 from PySide6.QtWidgets import QMainWindow, QMessageBox
 
 # Worker imports
@@ -92,40 +91,21 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
         showing a message if the user was created or not
         """
 
-        # create a new thread and a new worker
-        self.thread = QThread()
         self.worker = VerifyStudantInformationWorker(
             self.enrollment_number, self.password
         )
 
-        # connect the signals and slots
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.run)
+        isStudantCredentialsValid = self.worker.run()
 
-        self.worker.finished.connect(self.thread.quit)
-
-        # delete the thread and the worker when they finish
-        self.thread.finished.connect(self.thread.deleteLater)
-        self.worker.finished.connect(self.worker.deleteLater)
-
-        # Change the button stylesheets and disable them while the worker is running
-        self.worker.started.connect(
-            lambda: (
-                self.registerButton.setEnabled(False),
-                self.registerButton.setStyleSheet(
-                    "border-radius:15px;color:black;background-color:rgb(82, 88, 80);"
-                ),
-                self.returnButton.setEnabled(False),
-                self.returnButton.setStyleSheet(
-                    "border-radius:30px;border:2px solid #6E7DAB; background-color:rgb(156, 156, 156);"
-                ),
-            )
+        self.registerButton.setEnabled(False)
+        self.registerButton.setStyleSheet(
+            "border-radius:15px;color:black;background-color:rgb(82, 88, 80);"
         )
 
-        # When the worker finishes, it will trigger this function
-        self.worker.finished.connect(self.workerFinished)
-
-        self.thread.start()
+        self.returnButton.setEnabled(False)
+        self.returnButton.setStyleSheet(
+            "border-radius:30px;border:2px solid #6E7DAB; background-color:rgb(156, 156, 156);"
+        )
 
         self.showErrorMessage(
             "Estamos verificando suas informações, por favor aguarde",
@@ -133,9 +113,9 @@ class RegisterUserWindow(QMainWindow, Ui_RegisterUserWindow):
             "Verificando informações",
         )
 
-    def workerFinished(self, isStudantCredentialsValid: bool):
         """This method is triggered when the worker finishes, it gets the result from the worker quary and
         then decideses if the user will be create it in the database"""
+        print(isStudantCredentialsValid)
 
         if not isStudantCredentialsValid:
             self.showErrorMessage(

@@ -30,4 +30,4 @@ class VerifyStudantInformationWorker:
         self.password = password
 
     def run(self):
-        result = verifyStudantInformation(self.enrollment_number, self.password)
+        return verifyStudantInformation(self.enrollment_number, self.password)
