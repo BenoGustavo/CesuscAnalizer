@@ -105,8 +105,13 @@ class Scrapper:
             By.CLASS_NAME, "btnMenuLateral"
         )
 
+        # Passing through all the buttons in the lateral menu and finding the grades and frequency button
+        for gradesAndFrequency in gradesAndFrequencyButton:
+            if gradesAndFrequency.text == "Notas e Frequências":
+                gradesAndFrequencyButton = gradesAndFrequency
+
         # Click on the grades and frequency button
-        gradesAndFrequencyButton[7].click()
+        gradesAndFrequencyButton.click()
 
     def settingIframeToChromeDriver(self):
         """This method is responsible for setting the iframe to the chrome driver"""
