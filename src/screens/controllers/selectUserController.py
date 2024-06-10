@@ -88,9 +88,8 @@ class SelectUserWindow(QMainWindow, Ui_SelectUserWindow):
         self.worker.moveToThread(self.thread)
         self.thread.started.connect(self.worker.run)
 
-        self.worker.finished.connect(self.thread.quit)
-
         # delete the thread and the worker when they finish
+        self.worker.finished.connect(self.thread.quit)
         self.thread.finished.connect(self.thread.deleteLater)
         self.worker.finished.connect(self.worker.deleteLater)
 
